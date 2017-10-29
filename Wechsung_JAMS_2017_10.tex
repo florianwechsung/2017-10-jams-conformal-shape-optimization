@@ -33,36 +33,35 @@
       \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
     },
   }
-\definecolor{seaborn1}{rgb}{0.2980392156862745, 0.4470588235294118, 0.6901960784313725}
-\definecolor{seaborn2}{rgb}{0.3333333333333333, 0.6588235294117647, 0.40784313725490196}
-\definecolor{seaborn3}{rgb}{0.7686274509803922, 0.3058823529411765, 0.3215686274509804}
-\definecolor{seaborn4}{rgb}{0.5058823529411764, 0.4470588235294118, 0.6980392156862745}
-\definecolor{seaborn5}{rgb}{0.8, 0.7254901960784313, 0.4549019607843137}
-\definecolor{seaborn6}{rgb}{0.39215686274509803, 0.7098039215686275, 0.803921568627451}
 \definecolor{blue}{rgb}{0.2980392156862745, 0.4470588235294118, 0.6901960784313725}
 \definecolor{green}{rgb}{0.3333333333333333, 0.6588235294117647, 0.40784313725490196}
 \definecolor{red}{rgb}{0.7686274509803922, 0.3058823529411765, 0.3215686274509804}
+\definecolor{purple}{rgb}{0.5058823529411764, 0.4470588235294118, 0.6980392156862745}
+\definecolor{yellow}{rgb}{0.8, 0.7254901960784313, 0.4549019607843137}
+\definecolor{lightblue}{rgb}{0.39215686274509803, 0.7098039215686275, 0.803921568627451}
+
 \newenvironment{variableblock}[3]{%
   \setbeamercolor{block body}{#2}
   \setbeamercolor{block title}{#3}
   \begin{block}{#1}}{\end{block}}
 
 \newenvironment{challengeblock}[1]{%
-  \begin{variableblock}{#1}{bg=seaborn3!20,fg=black}{bg=seaborn3,fg=white}}{\end{variableblock}}
+  \begin{variableblock}{#1}{bg=red!20,fg=black}{bg=red,fg=white}}{\end{variableblock}}
 \renewenvironment{exampleblock}[1]{%
   \begin{variableblock}{#1}{bg=green!20,fg=black}{bg=green,fg=white}}{\end{variableblock}}
+
 \newenvironment{answerblock}[1]{%
   \begin{variableblock}{#1}{bg=blue!20,fg=black}{bg=blue,fg=white}}{\end{variableblock}}
 \newenvironment{ideablock}[1]{%
-  \begin{variableblock}{#1}{bg=seaborn5!20,fg=black}{bg=seaborn5,fg=white}}{\end{variableblock}}
+  \begin{variableblock}{#1}{bg=yellow!20,fg=black}{bg=yellow,fg=white}}{\end{variableblock}}
 
 
 \newenvironment{lem}[1][Lemma]{%
-    \begin{variableblock}{#1}{bg=green!20,fg=black}{bg=green,fg=white}}{\end{variableblock}}
+    \begin{variableblock}{#1}{bg=lightblue!20,fg=black}{bg=lightblue,fg=white}}{\end{variableblock}}
 \newenvironment{prop}[1][Proposition]{%
-    \begin{variableblock}{#1}{bg=seaborn6!20,fg=black}{bg=seaborn6,fg=white}}{\end{variableblock}}
-\newenvironment{defi}[1][Definition]{%
     \begin{variableblock}{#1}{bg=blue!20,fg=black}{bg=blue,fg=white}}{\end{variableblock}}
+\newenvironment{defi}[1][Definition]{%
+    \begin{variableblock}{#1}{bg=purple!20,fg=black}{bg=purple,fg=white}}{\end{variableblock}}
 
 \usepackage{microtype}
 \newcommand{\CR}{\mathrm{CR}}
@@ -93,6 +92,7 @@
     }{player.swf}
 }
 \begin{document}
+
 \maketitle
 %\begin{frame}[t]{Overview}
 %    \tableofcontents
@@ -159,10 +159,10 @@
 \begin{frame}{Mesh deformation}
     When we deform the mesh we need to ensure that
     \begin{itemize}
-        \item elements to not start overlapping;
+        \item elements do not start overlapping;
         \item elements do not become overly stretched.
     \end{itemize}
-    \begin{challengeblock}{Problem}
+    \begin{challengeblock}{Challenge}
         We need to find ways of deforming the finite element mesh without reducing its quality.
     \end{challengeblock}
 \end{frame}
@@ -184,7 +184,7 @@
     \end{center}
 \end{frame}
 \begin{frame}{Riemannian Mapping Theorem}
-    \begin{definition}[Conformal Mapping]
+    \begin{defi}[Definition (Conformal Mapping)]
         Let $\Omega\subset\re^2$. A vector-field $\ub=(u,v):\Omega\to \re^2$ is called \emph{conformal} if it satisfies the \emph{Cauchy-Riemann equations}
         \begin{equation}
             \Bc\ub \defeq \begin{pmatrix}
@@ -193,10 +193,10 @@
             \end{pmatrix} = 0.
         \end{equation}
         Conformal mappings are \emph{angle preserving}.
-    \end{definition}
-    \begin{theorem}[Riemannian Mapping Theorem]
+    \end{defi}
+    \begin{prop}[Riemannian Mapping Theorem]
         Let $\Omega,\ \Omega' \subset\re^2$ be two simply connected domains, then there exists a conformal mapping $\ub:\Omega\to \Omega'$.
-    \end{theorem}
+    \end{prop}
     \begin{ideablock}{Idea}
         Can we use conformal mappings in shape optimization?
     \end{ideablock}
@@ -360,6 +360,19 @@ as $\alpha\downarrow 0$,
     \end{adjustwidth}
     \begin{center}
         Optimal shapes obtained when using previous inner-products (left and center) vs when using the augmented inner-product (right).
+    \end{center}
+\end{frame}
+\begin{frame}
+    \vspace{1em}
+    \begin{adjustwidth}{-4em}{-4em}
+        \begin{center}
+            \includegraphics[width=0.54\textwidth]{./img/levelset/CR_grad_1e_2_mesh_quality_initial.png}\\
+            \includegraphics[width=0.54\textwidth]{./img/levelset/sym_grad_mesh_quality_final.png}
+            \includegraphics[width=0.54\textwidth]{./img/levelset/CR_sym_grad_1e-2_mesh_quality_final.png}
+        \end{center}
+    \end{adjustwidth}
+    \begin{center}
+        Mesh quality for initial mesh (top) and for final mesh when using the elasticity inner-product (bottom-left) vs the augmented inner-product (bottom-right).
     \end{center}
 \end{frame}
 \end{document}
