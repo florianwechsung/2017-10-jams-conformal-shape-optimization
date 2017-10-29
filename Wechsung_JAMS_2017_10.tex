@@ -9,15 +9,16 @@
 \title{Shape Optimization Using Nearly Conformal Mappings}
 \date{October 31, 2017 - JAMS}
 \author{Florian Wechsung, Kevin Sturm, Jos\'e A. Iglesias}
+\usepackage{standalone}
 \usepackage{mathtools}
 \mathtoolsset{showonlyrefs}
 %\usepackage{graphics}
 %\usepackage{amsmath}
 
 \usepackage{changepage}
-\usepackage{animate}
 \usepackage[noplaybutton]{media9}
-\usepackage[colorlinks]{hyperref}
+\usepackage[percent]{overpic}
+\usepackage{hyperref}
 \usepackage{attachfile2}
 \usefonttheme[onlymath]{serif}
 \include{latex-includes/makros}
@@ -68,27 +69,21 @@
 
 \newcommand{\includemovie}[2][]{
     \includemedia[
-        #1,
-        activate=pageopen,transparent,
-        addresource=#2.mp4,addresource=#2.png,
-        flashvars={
-            file=#2.mp4&image=#2.png&
-            stretching=uniform&start=0&
-            screencolor=white& %improves render in light backgrounds
-            controlbar.position=over&controlbar.idlehide=true&
-            autostart=true&repeat=always&smoothing=true
-            %&bufferlength=10 % may improve repetition of short videos
-        }
-    ]{ % for disabled content (in most cases this is fallback)
-        \begin{tabular}{ll}
-            \mbox{
-            %   \href{run:#2.mp4} % for not embedded fallback
-                \textattachfile[color={0 0 0}]{#2.mp4} % for embedded fallback
-                {
-                \texttt{|\kern-.23em>}
-                } % poor play button
-            } & \raisebox{-\height}{\includegraphics[#1]{#2}}
-        \end{tabular}
+    #1,
+    activate=pageopen,transparent,
+    addresource=#2.mp4,addresource=#2.png,
+    flashvars={
+        file=#2.mp4&image=#2.png&
+        stretching=uniform&start=0&
+        screencolor=white& %improves render in light backgrounds
+        controlbar.position=over&controlbar.idlehide=true&
+        autostart=true&repeat=always&smoothing=true
+        %&bufferlength=10 % may improve repetition of short videos
+    }
+    ]{
+        %\href{run:#2.mp4}{
+            \includegraphics[#1]{#2}
+        %}
     }{player.swf}
 }
 \begin{document}
@@ -166,6 +161,97 @@
         We need to find ways of deforming the finite element mesh without reducing its quality.
     \end{challengeblock}
 \end{frame}
+\begin{frame}{Shape derivative}
+    \only<1>{
+        \begin{equation}
+            \begin{aligned}
+                & \underset{\Omega}{\text{minimize}}
+                & & J(\Omega, u)\\
+                &\text{ subject to } && \Omega \in K\\
+                &&& e_{\Omega}(u) = 0
+            \end{aligned}
+        \end{equation}
+    }
+    \only<2->{
+        \begin{equation}
+            \begin{aligned}
+                & \underset{\Omega}{\text{minimize}}
+                & & J(\Omega)
+            \end{aligned}
+        \end{equation}
+    }
+    \only<3->{
+        \begin{itemize}
+            \item Let $H$ be a Hilbert space of vector-fields defined on $\Omega$ (think $H=H^1(\Omega;\re^2)$).
+            \item The shape derivative is then given by 
+                \begin{equation}
+                    \Dr J(\Omega)[\vb] = \lim_{h\downarrow 0} \frac{J((\idb+h\vb)(\Omega)) - J(\Omega)}{h}
+                \end{equation}
+            \item Hadamard Theorem: there exists a $g:\partial\Omega\to\re$ such that 
+                \begin{equation}
+                    \Dr J(\Omega)[\vb] = \int_{\partial\Omega} g \vb\cdot \nb \dr \sb \quad \text{ for all } \vb\in H.
+                \end{equation}
+        \end{itemize}
+    }
+\end{frame}
+\begin{frame}{From derivative to gradient}
+    \begin{defi}
+        The gradient $u\in H$ of $J$ at $\Omega$ is defined as the unique solution of
+            \begin{equation}
+                \min_{\vb\in H} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
+            \end{equation}
+    \end{defi}
+    \begin{lem}
+
+        The normalized gradient $-\frac{\ub}{\norm{\ub}_H}$ solves 
+        \begin{equation}
+            \min_{\vb\in H: \norm{\vb}_H=1} \Dr J(\Omega)[\vb],
+        \end{equation}
+        and the gradient $u$ satisfies
+        \begin{equation}
+            (\ub, \vb)_H = \Dr J(\Omega)[\vb].
+        \end{equation}
+        and 
+    \end{lem}
+\end{frame}
+\begin{frame}
+    \begin{example}
+        If we pick $H=[\mathring{H}^1(\Omega)]^2$ and 
+            \begin{equation}
+                (\ub, \vb)_{\mathring{H}^1} \defeq \int_{\Omega} \nabla \ub\colon \nabla \vb \dr \xb
+            \end{equation}
+            then the equation for the shape gradient becomes
+            \begin{equation}
+                \int_{\Omega} \nabla \ub\colon \nabla \vb \dr \xb = \int_{\partial\Omega} g\vb\cdot\nb\dr\sb
+            \end{equation}
+            This is the weak form of 
+            \begin{equation}
+                \begin{aligned}
+                    - \Delta \ub &= 0 && \text{ in }\Omega,\\
+                    \frac{\partial\ub}{\partial\nb} &= g\nb && \text{ on }\Omega.
+                \end{aligned}
+            \end{equation}
+    \end{example}
+\end{frame}
+\begin{frame}
+    \begin{example}
+        If we pick $H=\mathring{H}^1(\sym; \Omega)$ and 
+            \begin{equation}
+                (\ub, \vb)_{\mathring{H}^1(\sym)} \defeq \int_{\Omega} \sym(\nabla \ub)\colon \sym(\nabla \vb) \dr \xb
+            \end{equation}
+            then the equation for the shape gradient becomes
+            \begin{equation}
+                \int_{\Omega} \sym(\nabla \ub)\colon \sym(\nabla \vb) \dr \xb = \int_{\partial\Omega} g\vb\cdot\nb\dr\sb
+            \end{equation}
+            This is the weak form of 
+            \begin{equation}
+                \begin{aligned}
+                    - \div(\sym(\nabla \ub)) &= 0 && \text{ in }\Omega,\\
+                    \sym(\nabla \ub) \nb &= g\nb && \text{ on }\Omega.
+                \end{aligned}
+            \end{equation}
+    \end{example}
+\end{frame}
 \begin{frame}{Example}
     Consider the toy problem of mapping a circle to a clover-like shape:
     \begin{center}
@@ -201,96 +287,6 @@
         Can we use conformal mappings in shape optimization?
     \end{ideablock}
 \end{frame}
-\begin{frame}
-    \only<1>{
-        \begin{equation}
-            \begin{aligned}
-                & \underset{\Omega}{\text{minimize}}
-                & & J(\Omega, u)\\
-                &\text{ subject to } && \Omega \in K\\
-                &&& e_{\Omega}(u) = 0
-            \end{aligned}
-        \end{equation}
-    }
-    \only<2->{
-        \begin{equation}
-            \begin{aligned}
-                & \underset{\Omega}{\text{minimize}}
-                & & J(\Omega)
-            \end{aligned}
-        \end{equation}
-    }
-    \only<3->{
-        \begin{itemize}
-            \item Let $H$ be a Hilbert space of vector-fields defined on $\Omega$ (think $H=H^1(\Omega;\re^2)$).
-            \item The shape derivative is then given by 
-                \begin{equation}
-                    \Dr J(\Omega)[\vb] = \lim_{h\downarrow 0} \frac{J((\idb+h\vb)(\Omega)) - J(\Omega)}{h}
-                \end{equation}
-            \item Hadamard Theorem: there exists a $g:\partial\Omega\to\re$ such that 
-                \begin{equation}
-                    \Dr J(\Omega)[\vb] = \int_{\partial\Omega} g \vb\cdot \nb \dr \xb \quad \text{ for all } \vb\in H.
-                \end{equation}
-        \end{itemize}
-    }
-\end{frame}
-\begin{frame}{From derivative to gradient}
-    \begin{defi}
-        The gradient $u\in H$ of $J$ at $\Omega$ is defined as the unique solution of
-            \begin{equation}
-                \min_{\vb\in H} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
-            \end{equation}
-    \end{defi}
-    \begin{lem}
-        The gradient $u$ satisfies
-        \begin{equation}
-            (\ub, \vb)_H = \Dr J(\Omega)[\vb],
-        \end{equation}
-        and 
-        $\frac{-\ub}{\norm{\ub}_H}$ solves 
-        \begin{equation}
-            \min_{\vb\in H: \norm{\vb}_H=1} \Dr J(\Omega)[\vb].
-        \end{equation}
-    \end{lem}
-\end{frame}
-\begin{frame}
-    \begin{example}
-        If we pick $H=[\mathring{H}^1(\Omega)]^2$ and 
-            \begin{equation}
-                (\ub, \vb)_{\mathring{H}^1} \defeq \int_{\Omega} \nabla \ub\colon \nabla \vb \dr \xb
-            \end{equation}
-            then the equation for the shape gradient becomes
-            \begin{equation}
-                \int_{\Omega} \nabla \ub\colon \nabla \vb \dr \xb = \int_{\partial\Omega} g\vb\cdot\nb\dr\xb
-            \end{equation}
-            This is the weak form of 
-            \begin{equation}
-                \begin{aligned}
-                    - \Delta \ub &= 0 && \text{ in }\Omega,\\
-                    \frac{\partial\ub}{\partial\nb} &= g\nb && \text{ on }\Omega.
-                \end{aligned}
-            \end{equation}
-    \end{example}
-\end{frame}
-\begin{frame}
-    \begin{example}
-        If we pick $H=\mathring{H}^1(\sym; \Omega)$ and 
-            \begin{equation}
-                (\ub, \vb)_{\mathring{H}^1(\sym)} \defeq \int_{\Omega} \sym(\nabla \ub)\colon \sym(\nabla \vb) \dr \xb
-            \end{equation}
-            then the equation for the shape gradient becomes
-            \begin{equation}
-                \int_{\Omega} \sym(\nabla \ub)\colon \sym(\nabla \vb) \dr \xb = \int_{\partial\Omega} g\vb\cdot\nb\dr\xb
-            \end{equation}
-            This is the weak form of 
-            \begin{equation}
-                \begin{aligned}
-                    - \div(\sym(\nabla \ub)) &= 0 && \text{ in }\Omega,\\
-                    \sym(\nabla \ub) \nb &= g\nb && \text{ on }\Omega.
-                \end{aligned}
-            \end{equation}
-    \end{example}
-\end{frame}
 
 \begin{frame}
     \begin{itemize}
@@ -325,7 +321,7 @@
 \end{frame}
 \begin{frame}
     \vspace{1em}
-    \begin{prop}[Proposition (Decomposition)]
+    \begin{prop}[Proposition (Decomposition)\cite{iglesias2017shape}]
         Consider the orthogonal decomposition $H = V \oplus V^\perp $ for $V=\{\ub : \Bc \ub=0\}$.
         Then for $\alpha>0$ the gradient $\ub_\alpha$ can be decomposed into 
         \begin{equation}
@@ -349,6 +345,11 @@ as $\alpha\downarrow 0$,
     \end{ideablock}
 \end{frame}
 \begin{frame}{Numerical example}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{./img/levelset/levelset_init_optim.png}
+    \end{center}
+\end{frame}
+\begin{frame}{Numerical example}
     \begin{adjustwidth}{-3em}{-3em}
         \begin{center}
             \includegraphics[width=0.37\textwidth]{./img/levelset/grad_mesh_zoom.png}
@@ -363,6 +364,10 @@ as $\alpha\downarrow 0$,
     \end{center}
 \end{frame}
 \begin{frame}
+    \begin{center}
+        \includegraphics[width=0.67\textwidth]{./img/levelset/CR_sym_grad_1e-2_mesh.png}
+    \end{center}
+\end{frame}\begin{frame}
     \vspace{1em}
     \begin{adjustwidth}{-4em}{-4em}
         \begin{center}
@@ -374,6 +379,64 @@ as $\alpha\downarrow 0$,
     \begin{center}
         Mesh quality for initial mesh (top) and for final mesh when using the elasticity inner-product (bottom-left) vs the augmented inner-product (bottom-right).
     \end{center}
+\end{frame}
+
+\begin{frame}[b]{Weighted conformality}
+    \begin{itemize}
+        \item The method works well for cases in which there exists a conformal mapping between the initial and the optimal shape.
+        \item Unfortunately:
+    \end{itemize}
+    \begin{prop}[Proposition \cite{iglesias2017shape} (but appears to be well-known)]
+    Let $\Omega\subset\re^2$ be a Lipschitz domain and let $\Gamma\subset\partial\Omega$ be such that $\Hc^{n-1}(\Gamma)>0$.
+    If $\ub\in [H^1(\Omega)]^2$ satisfies $\Bc\ub=0$ and $\ub\vert_\Gamma = 0$, then $\ub=0$.
+    \end{prop}
+    \begin{challengeblock}{Problem}
+        If the shape is fixed somewhere, then there are no non-trivial conformal mappings.
+    \end{challengeblock}
+    We introduce a weighting function $\mu:\Omega\to\re$ and consider the gradient that solves
+    \begin{equation}
+\min_{\vb\in H} \frac{1}{2}\left[\norm{\vb}_H^2 + \frac{1}{\alpha} \norm{\textcolor{red}{\mu}\Bc\vb}_{L^2}^2\right] - \Dr J(\Omega)[\vb], \quad \text{ for } \alpha>0.
+    \end{equation}
+\end{frame}
+\begin{frame}{Example: drag minimization}
+    \begin{itemize}
+        \item Consider an obstacle in a fluid. Goal: minimize the drag while keeping the volume constant.
+        \item The boundary of the channel is fixed $\implies$ conformal mapping impossible.
+        \item Pick $\mu$ large close to the obstacle to guarantee conformality there.
+    \end{itemize}
+    \begin{center}
+        \includestandalone{./figures/navier-stokes-description}   
+    \end{center}
+\end{frame}
+\begin{frame}[b]
+    \begin{adjustwidth}{-6em}{-6em}
+        \begin{figure}
+            \begin{center}
+                \includemovie[width=0.99\paperwidth]{./img/navierstokes-channel}
+            \end{center}
+        \end{figure}
+    \end{adjustwidth}
+\end{frame}
+\begin{frame}{Three dimensions}
+    Extension to three dimensions is difficult, since
+    \begin{itemize}
+        \item in 3D, a vector-field $\ub$ is conformal if and only if 
+        \begin{equation}
+            \Dr\ub^\top\Dr\ub = (\mathrm{det}(\Dr \ub))^{2/3} \Ib_3;
+        \end{equation}
+        \item the Riemannian mapping theorem only holds in two dimensions.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Summary}
+    \begin{itemize}
+        \item Mesh deformation methods are a crucial ingredient of shape optimization.
+        \item The proposed method is extremely easy to implement as one just has to add an extra term to the existing inner-product.
+        \item When a conformal mapping between the initial and the optimal shape exists, the method leads to excellent mesh quality.
+        \item When there is no such mapping, a weighting function has be to used to control where non-conformality is acceptable.
+        \item Extension to three dimensions likely not possible.
+    \end{itemize}
+\bibliographystyle{alpha}
+\bibliography{latex-includes/TEX-Bib}
 \end{frame}
 \end{document}
 
