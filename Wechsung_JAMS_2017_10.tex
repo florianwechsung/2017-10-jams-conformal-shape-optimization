@@ -55,6 +55,15 @@
   \begin{variableblock}{#1}{bg=blue!20,fg=black}{bg=blue,fg=white}}{\end{variableblock}}
 \newenvironment{ideablock}[1]{%
   \begin{variableblock}{#1}{bg=seaborn5!20,fg=black}{bg=seaborn5,fg=white}}{\end{variableblock}}
+
+
+\newenvironment{lem}[1][Lemma]{%
+    \begin{variableblock}{#1}{bg=green!20,fg=black}{bg=green,fg=white}}{\end{variableblock}}
+\newenvironment{prop}[1][Proposition]{%
+    \begin{variableblock}{#1}{bg=seaborn6!20,fg=black}{bg=seaborn6,fg=white}}{\end{variableblock}}
+\newenvironment{defi}[1][Definition]{%
+    \begin{variableblock}{#1}{bg=blue!20,fg=black}{bg=blue,fg=white}}{\end{variableblock}}
+
 \usepackage{microtype}
 \newcommand{\CR}{\mathrm{CR}}
 
@@ -226,16 +235,23 @@
     }
 \end{frame}
 \begin{frame}{From derivative to gradient}
-    \begin{itemize}
-        \item The gradient at $\Omega$ is defined as the element $\ub\in H$ such that 
+    \begin{defi}
+        The gradient $u\in H$ of $J$ at $\Omega$ is defined as the unique solution of
             \begin{equation}
-                (\ub, \vb)_H = \Dr J(\Omega)[\vb].
+                \min_{\vb\in H} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
             \end{equation}
-        \item One can show that $\frac{-\ub}{\norm{\ub}_H}$ solves 
-            \begin{equation}
-                \min_{\vb\in H: \norm{\vb}_H=1} \Dr J(\Omega)[\vb].
-            \end{equation}
-    \end{itemize}
+    \end{defi}
+    \begin{lem}
+        The gradient $u$ satisfies
+        \begin{equation}
+            (\ub, \vb)_H = \Dr J(\Omega)[\vb],
+        \end{equation}
+        and 
+        $\frac{-\ub}{\norm{\ub}_H}$ solves 
+        \begin{equation}
+            \min_{\vb\in H: \norm{\vb}_H=1} \Dr J(\Omega)[\vb].
+        \end{equation}
+    \end{lem}
 \end{frame}
 \begin{frame}
     \begin{example}
@@ -278,7 +294,7 @@
 
 \begin{frame}
     \begin{itemize}
-        \item Alternative view-point: shape gradient $\ub$ solves
+        \item Recall: the shape gradient $\ub$ solves
             \begin{equation}
                 \min_{\vb\in H} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
             \end{equation}
@@ -298,15 +314,33 @@
             \begin{equation}
                 (\ub, \vb)_{H+\CR(\alpha)} \defeq (\ub, \vb)_H + \frac{1}{\alpha} (\Bc\ub, \Bc\vb)_{L^2}
             \end{equation}
+            and norm
+            \begin{equation}
+                \|\ub\|^2_{H+\CR(\alpha)} \defeq \|\ub\|^2_H + \frac{1}{\alpha} \|\Bc\ub\|^2_{L^2}
+            \end{equation}
     \end{itemize}
     \begin{ideablock}{Intuition}
         The new inner-product changes the geometry of the function space $H$ so that non-conformal functions are penalized.
     \end{ideablock}
 \end{frame}
 \begin{frame}
-    \begin{theorem}[Decomposition]
-        Bla bla bla
-    \end{theorem}
+    \vspace{1em}
+    \begin{prop}[Proposition (Decomposition)]
+        Consider the orthogonal decomposition $H = V \oplus V^\perp $ for $V=\{\ub : \Bc \ub=0\}$.
+        Then for $\alpha>0$ the gradient $\ub_\alpha$ can be decomposed into 
+        \begin{equation}
+            \ub_\alpha = \ub_\alpha^{(1)} + \ub_\alpha^{(2)}
+        \end{equation}
+        with $\ub_\alpha^{(1)}\in V$ and $\ub_\alpha^{(2)}\in V^\perp$.
+        Furthermore, $\ub_\alpha^{(1)}$ is independent of $\alpha$ and 
+                \begin{equation}
+                    \begin{aligned}
+                        \ub_\alpha^{(2)} &\to 0 \quad \text{ strongly in } H,\\
+                        \frac{1}{\sqrt{\alpha}} \Bc(\ub_\alpha) &\to 0 \quad \text{ strongly in } [L^2(\Omega)]^2,
+                    \end{aligned}
+                \end{equation}
+as $\alpha\downarrow 0$, 
+    \end{prop}
     \begin{ideablock}{Intuition}
         \begin{itemize}
             \item We can decompose the gradient into a conformal and a non-conformal part.
