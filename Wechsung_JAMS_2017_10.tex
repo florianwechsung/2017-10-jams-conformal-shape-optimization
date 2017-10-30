@@ -123,7 +123,7 @@
             \begin{itemize}
                 \item Volume
                 \item Barycentre
-                \item Minimum lift
+                \item Feasibility domain
                     \item \dots
             \end{itemize}
         \end{minipage}
@@ -157,9 +157,19 @@
         \item elements do not start overlapping;
         \item elements do not become overly stretched.
     \end{itemize}
+    \pause
     \begin{challengeblock}{Challenge}
         We need to find ways of deforming the finite element mesh without reducing its quality.
     \end{challengeblock}
+\end{frame}
+\begin{frame}{Mesh deformation}
+    Simple shape optimization algorithm\pause
+    \begin{enumerate}
+        \item Calculate the shape derivative, that is, \emph{the sensitivity of the functional with respect to deformations}.\pause
+        \item Calculate the shape gradient, that is, \emph{the deformation direction that leads to the largest change of the functional}.\pause
+        \item Deform shape in direction of the shape gradient.
+        \item Repeat.
+    \end{enumerate}
 \end{frame}
 \begin{frame}{Shape derivative}
     \only<1>{
@@ -187,10 +197,12 @@
                 \begin{equation}
                     \Dr J(\Omega)[\vb] = \lim_{h\downarrow 0} \frac{J((\idb+h\vb)(\Omega)) - J(\Omega)}{h}
                 \end{equation}
+
+        \only<4->{
             \item Hadamard Theorem: there exists a $g:\partial\Omega\to\re$ such that 
                 \begin{equation}
                     \Dr J(\Omega)[\vb] = \int_{\partial\Omega} g \vb\cdot \nb \dr \sb \quad \text{ for all } \vb\in H.
-                \end{equation}
+            \end{equation}}
         \end{itemize}
     }
 \end{frame}
@@ -201,12 +213,12 @@
                 \min_{\vb\in H} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
             \end{equation}
     \end{defi}
+    \pause
     \begin{lem}
-
         The normalized gradient $-\frac{\ub}{\norm{\ub}_H}$ solves 
         \begin{equation}
             \min_{\vb\in H: \norm{\vb}_H=1} \Dr J(\Omega)[\vb],
-        \end{equation}
+        \end{equation}\pause
         and the gradient $u$ satisfies
         \begin{equation}
             (\ub, \vb)_H = \Dr J(\Omega)[\vb].
@@ -219,11 +231,11 @@
         If we pick $H=[\mathring{H}^1(\Omega)]^2$ and 
             \begin{equation}
                 (\ub, \vb)_{\mathring{H}^1} \defeq \int_{\Omega} \nabla \ub\colon \nabla \vb \dr \xb
-            \end{equation}
+            \end{equation}\pause
             then the equation for the shape gradient becomes
             \begin{equation}
                 \int_{\Omega} \nabla \ub\colon \nabla \vb \dr \xb = \int_{\partial\Omega} g\vb\cdot\nb\dr\sb
-            \end{equation}
+            \end{equation}\pause
             This is the weak form of 
             \begin{equation}
                 \begin{aligned}
@@ -252,6 +264,15 @@
             \end{equation}
     \end{example}
 \end{frame}
+\begin{frame}{Summary}
+    \begin{ideablock}{Summary}
+        \begin{itemize}
+            \item Derivative and gradient are not the same thing in general.\pause
+            \item Calculating the gradient involves solving a PDE.\pause
+            \item The gradient is dependent on the choice of inner-product.
+        \end{itemize}
+    \end{ideablock}
+\end{frame}
 \begin{frame}{Example}
     Consider the toy problem of mapping a circle to a clover-like shape:
     \begin{center}
@@ -279,10 +300,10 @@
             \end{pmatrix} = 0.
         \end{equation}
         Conformal mappings are \emph{angle preserving}.
-    \end{defi}
+    \end{defi}\pause
     \begin{prop}[Riemannian Mapping Theorem]
         Let $\Omega,\ \Omega' \subset\re^2$ be two simply connected domains, then there exists a conformal mapping $\ub:\Omega\to \Omega'$.
-    \end{prop}
+    \end{prop}\pause
     \begin{ideablock}{Idea}
         Can we use conformal mappings in shape optimization?
     \end{ideablock}
@@ -293,12 +314,12 @@
         \item Recall: the shape gradient $\ub$ solves
             \begin{equation}
                 \min_{\vb\in H} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
-            \end{equation}
+            \end{equation}\pause
         \item We want to restrict ourselves to deformations that are conformal:
             \begin{equation}
                 \min_{\vb\in H:\textcolor{red}{\Bc \vb = 0}} \frac{1}{2}\norm{\vb}_H^2 - \Dr J(\Omega)[\vb].
-            \end{equation}
-        \item This problem does not always have a non-trivial solution, so consider instead
+            \end{equation}\pause
+        \item This problem does not always have a non-trivial solution, \pause so consider instead
             \begin{equation}
                 \min_{\vb\in H} \frac{1}{2}\left[\norm{\vb}_H^2 + \textcolor{red}{\frac{1}{\alpha} \norm{\Bc\vb}_{L^2}^2}\right] - \Dr J(\Omega)[\vb], \quad \text{ for } \alpha>0.
             \end{equation}
@@ -314,7 +335,7 @@
             \begin{equation}
                 \|\ub\|^2_{H+\CR(\alpha)} \defeq \|\ub\|^2_H + \frac{1}{\alpha} \|\Bc\ub\|^2_{L^2}
             \end{equation}
-    \end{itemize}
+    \end{itemize}\pause
     \begin{ideablock}{Intuition}
         The new inner-product changes the geometry of the function space $H$ so that non-conformal functions are penalized.
     \end{ideablock}
@@ -327,7 +348,7 @@
         \begin{equation}
             \ub_\alpha = \ub_\alpha^{(1)} + \ub_\alpha^{(2)}
         \end{equation}
-        with $\ub_\alpha^{(1)}\in V$ and $\ub_\alpha^{(2)}\in V^\perp$.
+        with $\ub_\alpha^{(1)}\in V$ and $\ub_\alpha^{(2)}\in V^\perp$.\pause
         Furthermore, $\ub_\alpha^{(1)}$ is independent of $\alpha$ and 
                 \begin{equation}
                     \begin{aligned}
@@ -336,7 +357,7 @@
                     \end{aligned}
                 \end{equation}
 as $\alpha\downarrow 0$, 
-    \end{prop}
+    \end{prop}\pause
     \begin{ideablock}{Intuition}
         \begin{itemize}
             \item We can decompose the gradient into a conformal and a non-conformal part.
@@ -371,7 +392,7 @@ as $\alpha\downarrow 0$,
     \vspace{1em}
     \begin{adjustwidth}{-4em}{-4em}
         \begin{center}
-            \includegraphics[width=0.54\textwidth]{./img/levelset/CR_grad_1e_2_mesh_quality_initial.png}\\
+            \includegraphics[width=0.54\textwidth]{./img/levelset/CR_grad_1e_2_mesh_quality_initial.png}\\\pause
             \includegraphics[width=0.54\textwidth]{./img/levelset/sym_grad_mesh_quality_final.png}
             \includegraphics[width=0.54\textwidth]{./img/levelset/CR_sym_grad_1e-2_mesh_quality_final.png}
         \end{center}
@@ -381,28 +402,43 @@ as $\alpha\downarrow 0$,
     \end{center}
 \end{frame}
 
-\begin{frame}[b]{Weighted conformality}
+\begin{frame}[b]{Non-existence of conformal mappings}
     \begin{itemize}
-        \item The method works well for cases in which there exists a conformal mapping between the initial and the optimal shape.
+        \item The method works well for cases in which there exists a conformal mapping between the initial and the optimal shape. \pause
         \item Unfortunately:
     \end{itemize}
-    \begin{prop}[Proposition \cite{iglesias2017shape} (but appears to be well-known)]
-    Let $\Omega\subset\re^2$ be a Lipschitz domain and let $\Gamma\subset\partial\Omega$ be such that $\Hc^{n-1}(\Gamma)>0$.
-    If $\ub\in [H^1(\Omega)]^2$ satisfies $\Bc\ub=0$ and $\ub\vert_\Gamma = 0$, then $\ub=0$.
-    \end{prop}
-    \begin{challengeblock}{Problem}
-        If the shape is fixed somewhere, then there are no non-trivial conformal mappings.
-    \end{challengeblock}
+    \begin{prop}
+        Let $\Omega\subset\re^2$ be a Lipschitz domain and let $\Gamma\subset\partial\Omega$ be such that $\Hc^{n-1}(\Gamma)>0$.
+        If $\ub\in [H^1(\Omega)]^2$ satisfies $\Bc\ub=0$ and $\ub\vert_\Gamma = 0$, then $\ub=0$.
+    \end{prop} \pause
+    \begin{prop}
+        Let $A(r,R) := \{ \zb:\; r<|\zb|<R\}$ denote an annulus of outer radius $R$ and inner radius  $r$.
+        The annulus $A(r,R)$ can be conformally mapped to the annulus $A(r', R')$ if and only if $\frac{R}{r} = \frac{R'}{r'}$.
+    \end{prop} \pause
     We introduce a weighting function $\mu:\Omega\to\re$ and consider the gradient that solves
     \begin{equation}
-\min_{\vb\in H} \frac{1}{2}\left[\norm{\vb}_H^2 + \frac{1}{\alpha} \norm{\textcolor{red}{\mu}\Bc\vb}_{L^2}^2\right] - \Dr J(\Omega)[\vb], \quad \text{ for } \alpha>0.
+        \min_{\vb\in H} \frac{1}{2}\left[\norm{\vb}_H^2 + \frac{1}{\alpha} \norm{\textcolor{red}{\mu}\Bc\vb}_{L^2}^2\right] - \Dr J(\Omega)[\vb], \quad \text{ for } \alpha>0.
     \end{equation}
+\end{frame}
+\begin{frame}{Toy example with fixed boundary}
+   \begin{figure}
+       \begin{center}
+           \includegraphics[width=0.49\textwidth]{./img/levelset/with_bc_init.png}
+           \includegraphics[width=0.49\textwidth]{./img/levelset/with_bc_optim.png}
+       \end{center}
+       \caption{Initial and optimal shape. The inner boundary is to be kept fixed.}
+   \end{figure} 
+\end{frame}
+\begin{frame}
+    \begin{center}
+        \includemovie[width=0.7\textwidth]{./img/levelset/with_bc}
+    \end{center}
 \end{frame}
 \begin{frame}{Example: drag minimization}
     \begin{itemize}
-        \item Consider an obstacle in a fluid. Goal: minimize the drag while keeping the volume constant.
-        \item The boundary of the channel is fixed $\implies$ conformal mapping impossible.
-        \item Pick $\mu$ large close to the obstacle to guarantee conformality there.
+        \item<1-> Consider an obstacle in a fluid. Goal: minimize the drag while keeping the volume constant.
+        \item<2-> The boundary of the channel is fixed $\implies$ conformal mapping impossible.
+        \item<3-> Pick $\mu$ large close to the obstacle to guarantee conformality there.
     \end{itemize}
     \begin{center}
         \includestandalone{./figures/navier-stokes-description}   
@@ -418,25 +454,27 @@ as $\alpha\downarrow 0$,
     \end{adjustwidth}
 \end{frame}
 \begin{frame}{Three dimensions}
-    Extension to three dimensions is difficult, since
+    Extension to three dimensions is difficult\pause, since
     \begin{itemize}
         \item in 3D, a vector-field $\ub$ is conformal if and only if 
-        \begin{equation}
-            \Dr\ub^\top\Dr\ub = (\mathrm{det}(\Dr \ub))^{2/3} \Ib_3;
-        \end{equation}
+            \begin{equation}
+                \Dr\ub^\top\Dr\ub = (\mathrm{det}(\Dr \ub))^{2/3} \Ib_3;
+            \end{equation}\pause
         \item the Riemannian mapping theorem only holds in two dimensions.
     \end{itemize}
 \end{frame}
 \begin{frame}{Summary}
     \begin{itemize}
-        \item Mesh deformation methods are a crucial ingredient of shape optimization.
-        \item The proposed method is extremely easy to implement as one just has to add an extra term to the existing inner-product.
-        \item When a conformal mapping between the initial and the optimal shape exists, the method leads to excellent mesh quality.
-        \item When there is no such mapping, a weighting function has be to used to control where non-conformality is acceptable.
-        \item Extension to three dimensions likely not possible.
+        \item<1->Mesh deformation methods are a crucial ingredient of shape optimization.
+        \item<2->The proposed method is extremely easy to implement as one just has to add an extra term to the existing inner-product.
+        \item<3-> When a conformal mapping between the initial and the optimal shape exists, the method leads to excellent mesh quality.
+        \item<4-> When there is no such mapping, a weighting function has be to used to control where non-conformality is acceptable.
+        \item<5-> Extension to three dimensions questionable.
     \end{itemize}
-\bibliographystyle{alpha}
-\bibliography{latex-includes/TEX-Bib}
+    \only<6->{
+        \bibliographystyle{alpha}
+        \bibliography{latex-includes/TEX-Bib}
+    }
 \end{frame}
 \end{document}
 
